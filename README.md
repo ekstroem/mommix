@@ -1,2 +1,3 @@
-# geemixture
-Momentestimation ifm mixtures
+# Moment-based estimation of regression mixtures
+
+

@@ -21,11 +21,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP _mmm_mgrwc(SEXP, SEXP, SEXP, SEXP);
-
 static const R_CallMethodDef CallEntries[] = {
     {"_mommix_mgrwc", (DL_FUNC) &_mommix_mgrwc, 4},
-    {"_mmm_mgrwc", (DL_FUNC) &_mmm_mgrwc, 4},
     {NULL, NULL, 0}
 };
 

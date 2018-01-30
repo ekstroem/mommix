@@ -1,9 +1,10 @@
 Package: mommix
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: Moment-based estimation of regression mixtures
 Version: 0.5
 Date: 2018-01-30
-Authors@R: person(given="Claus Thorn", family="Ekstrøm", role = c("aut", "cre"), email = "ekstrom@sund.ku.dk")
+Authors@R: c(person(given="Claus Thorn", family="Ekstrøm", email="ekstrom@sund.ku.dk", role=c("aut", "cre")),
+             person(given="Christian Bressen", family="Pipper", email="pipper@sund.ku.dk", role="ctb"))
 Maintainer: Claus Thorn Ekstrøm <ekstrom@sund.ku.dk>
 Description: One paragraph description of what the package does as one
         or more full sentences.
@@ -15,4 +16,3 @@ ByteCompile: true
 Encoding: UTF-8    
 Suggests: 
     testthat
-

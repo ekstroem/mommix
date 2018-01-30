@@ -16,6 +16,5 @@ test_that("computations are consistant", {
     expect_equivalent(coef(res), c(0.1654199, 0.8233733, -0.2667224), tolerance=1e-4)
     expect_equivalent(coef(res2), c(0.1495042, 0.8259178, -0.2469152), tolerance=1e-4)
     expect_equivalent(res$alpha,0.3041905, tolerance=1e-4)
-    expect_equivalent(res2$alpha,0.3162248, tolerance=1e-4)
-    
+    expect_equivalent(res2$alpha,0.3162248, tolerance=1e-4)    
 } )

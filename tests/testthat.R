@@ -1,4 +1,4 @@
 library(testthat)
-library(mmm)
+library(mommix)
 
-test_check("mmm")
+test_check("mommix")
