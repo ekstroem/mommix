@@ -1,1 +1,2 @@
-../../forskning/geemixture/README.md
+# geemixture
+Momentestimation ifm mixtures
