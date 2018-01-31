@@ -26,7 +26,7 @@ level increases. Consequently, wines are thought to lose their quality
 as they become less acidic (increased pH) since the volatile acidity
 increases.
 
-The paper by @cort:etal:2009 considers 11 physicochemical properties
+The paper by Cortez et al (2009) considers 11 physicochemical properties
 of a selected sample of Portuguese *vinho verde* wines. Samples from
 1599 red wines and 4898 white wines are available and the relationship
 between volatile acidity and pH are shown separately for red and white
@@ -34,7 +34,8 @@ wines in the figure below.
 
 ```{r}
 library(mommix)
-library(magrittr)
+library(dplyr)
+library(ggplot2)
 data(wine)
 ## Remove extreme observations
 wine2 <- wine %>% filter(residual.sugar<25)
