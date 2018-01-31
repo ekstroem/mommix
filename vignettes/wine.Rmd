@@ -1,0 +1,112 @@
+---
+title: "The effect of pH on wine volatile acidity"
+author: "Claus Thorn Ekstrøm and Christian Bressen Pipper"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Volatile acidity (VA) refers to the process when lactic acid bacteria
+and acetic acids turns wine into vinegar, and the process takes
+place mainly due to growth of bacteria, the oxidation of ethanol, or
+the metabolism of acids/sugars. Wines with a high level of pH are
+supposedly more susceptible to oxidation and the antibacterial effects
+of sulfur dioxide and of fumaric acid are reduced rapidly as the pH
+level increases. Consequently, wines are thought to lose their quality
+as they become less acidic (increased pH) since the volatile acidity
+increases.
+
+The paper by @cort:etal:2009 considers 11 physicochemical properties
+of a selected sample of Portuguese *vinho verde* wines. Samples from
+1599 red wines and 4898 white wines are available and the relationship
+between volatile acidity and pH are shown separately for red and white
+wines in the figure below.
+
+```{r}
+library(mommix)
+library(magrittr)
+data(wine)
+## Remove extreme observations
+wine2 <- wine %>% filter(residual.sugar<25)
+
+## Plot the data
+wine2 %>% ggplot(aes(x=pH, y=volatile.acidity, col=colour)) +
+                geom_point(alpha = 1/5, position = position_jitter(h = 0), size = 2) +
+		ylab("Volatile acidity") + 
+                geom_smooth(method = 'lm', se=FALSE)
+```
+
+While it is apparent that the available red wines generally have
+slightly higher levels of pH, it also appears as if the impact of pH
+on volatile acidity is largest for the red wines in the sample:
+Individual regression lines for the two types of wine show an almost
+horizontal line for white wine while there is an effect of pH on VA
+for the red wines:
+
+```{r}
+winelm2 <- lm(volatile.acidity ~ pH*colour-1, data=wine2)
+summary(winelm2)
+```
+
+
+If we did not know that the full 6497 samples were comprised of two
+different types of wine we might pursue regressing volatile acidity on
+pH for the full data.
+
+```{r}
+winelm <- lm(volatile.acidity ~ pH, data=wine2)
+summary(winelm)
+```
+
+
+This gives the dashed regression shown in the figure below, which
+suggests an overall effect of pH on volatile acidity.
+
+
+```{r}
+wine2 %>% ggplot(aes(x=pH, y=volatile.acidity, col=colour)) + geom_point(alpha = 1/5, position = position_jitter(h = 0), size = 2) +
+  ylab("Volatile acidity") + 
+  geom_smooth(method = 'lm', se=FALSE) + 
+  geom_abline(intercept=coef(winelm)[1], slope=coef(winelm)[2], linetype=2) 
+```
+
+
+
+When we fit the moment-based mixture model then we  see that the
+data are likely to consist of a mixture, \(\hat{p} = 0.28\) (95\% CI:
+0.24-0.33), which suggests that only a proportion of the wines are
+influenced by pH:
+
+```{r}
+wineres <- moment_mixture_model(wine2, volatile.acidity ~ pH, weight="square")
+wineres
+```
+
+(For now we use the following code, which only handles one predictor but provides the standard errors. This will be removed in the future)
+
+```{r}
+wineback <- cbpcode(wine2$volatile.acidity, wine2$pH)
+wineback
+```
+
+
+Also, the effect driving the association between the
+volatile acidity and pH appears to be much stronger than what was
+observed from analyzing the full data with a simple linear regression
+model, \(\hat\beta=\) 0.94 (95\% CI 0.51-1.37). Consequently, the moment
+mixture model is able to identify that the wine data is likely to
+consist of two types of wines that respond differently to changes in
+levels of pH with only placing very few restrictions on the underlying
+distributions.
+
+

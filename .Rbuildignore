@@ -4,7 +4,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^.*\.html
-^.*\.Rmd
 ^.*\.pdf
 ^.*\.tex
 ^.*\.txt
