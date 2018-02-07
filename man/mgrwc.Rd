@@ -4,7 +4,7 @@
 \alias{mgrwc}
 \title{Gaussian mixture of regression models with contamination}
 \usage{
-mgrwc(y, X, maxit = 400L, tol = 1e-07)
+mgrwc(y, X, weight, maxit = 400L, tol = 1e-07)
 }
 \arguments{
 \item{y}{A vector of outcomes.}
@@ -16,7 +16,7 @@ mgrwc(y, X, maxit = 400L, tol = 1e-07)
 \item{tol}{the tolerance used for determining convergence}
 }
 \value{
-A list with the variables: coefficients, stderr, and tstat that gives the slope estimate, the corresponding standard error, and their ratio for each column in x.
+A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
 }
 \description{
 Fast computation of simple regression slopes for each predictor represented by a column in a matrix

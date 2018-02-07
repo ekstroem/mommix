@@ -4,12 +4,14 @@
 \alias{gaussian_mixture_model}
 \title{Fit 2-component Gaussian mixture model}
 \usage{
-gaussian_mixture_model(data, formula, ...)
+gaussian_mixture_model(data, formula, B = 200, ...)
 }
 \arguments{
 \item{data}{a data frame or tibble}
 
 \item{formula}{a formula model formula for the relationship}
+
+\item{B}{a positive integer giving the number of bootstrap samples used to obtain the estimates of the variance associated with the parameter estimates.}
 
 \item{...}{Additional arguments passed on to the fitting process.}
 }

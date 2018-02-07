@@ -13,7 +13,7 @@ using namespace Rcpp ;
 //' @param X A design matrix of regressor variables. Must have the same number of rows as the length of y. 
 //' @param maxit the maximum number of iterations to use for the EM algorithm
 //' @param tol the tolerance used for determining convergence
-//' @return A list with the variables: coefficients, stderr, and tstat that gives the slope estimate, the corresponding standard error, and their ratio for each column in x.
+//' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
 //' @author Claus Ekstrom <ekstrom@@sund.ku.dk>
 //' @examples
 //' x <- rnorm(1000)
@@ -24,6 +24,7 @@ using namespace Rcpp ;
 // [[Rcpp::export]]
 List mgrwc (const arma::colvec y,
             const arma::mat X,
+	    const arma::colvec weight,
             const int maxit = 400,
 	    const double tol = 1e-07 
             ) {
@@ -52,12 +53,17 @@ List mgrwc (const arma::colvec y,
     arma::colvec zi(N) ;
     arma::colvec sqrtzi(N) ;
 
+    double weightsum = arma::sum(weight);
+      
     // algorithm
     for (it = 0 ; it < maxit ; it++) {      
       // First find classification probabilities
       for (int n = 0 ; n < N ; n++) {
 	zi(n) = 1 / (1 + exp(log(1-alpha) - log(alpha) + R::dnorm(y(n), Xb(n,0), exp(sigma2), true) - R::dnorm(y(n), mu, exp(sigma1), true)));
       }
+
+      // Add weights here to zi for weighted likelihood
+      
       sqrtzi = sqrt(1-zi);
 
       sumzi = arma::sum(zi);
@@ -72,8 +78,9 @@ List mgrwc (const arma::colvec y,
 	break;
       }
 
-      alpha = arma::mean(zi);  // Probability of contamination
-      mu = arma::sum(zi%y) / sumzi; 
+      //      alpha = arma::mean(zi);  // Probability of contamination
+      alpha = arma::sum(zi%weight)/weightsum;  // Probability of contamination
+      mu = arma::sum(zi%weight%y) / arma::sum(zi%weight);   // SAVE
       sigma1 = .5*log(arma::sum( zi%square(y-mu)) / (sumzi));
 
       beta = arma::solve(sqrtzi%X.each_col(), sqrtzi%y);
@@ -99,8 +106,9 @@ List mgrwc (const arma::colvec y,
       // Exit if the change in log likelihood is below the tolerance
       if (fabs(nll - oldnll) < tol)
       	break;
-
     }
+
+    // Now we are done with the main estimation
 
     // returns
     List ret ;
@@ -112,5 +120,6 @@ List mgrwc (const arma::colvec y,
     ret["sigma2"] = exp(sigma2) ;
     ret["alpha"] = 1-alpha ;
     ret["iterationsused"] = it ;
+    ret["groupprob"] = zi;
     return(ret) ;
 }

@@ -11,7 +11,7 @@
 #' @param X A design matrix of regressor variables. Must have the same number of rows as the length of y. 
 #' @param maxit the maximum number of iterations to use for the EM algorithm
 #' @param tol the tolerance used for determining convergence
-#' @return A list with the variables: coefficients, stderr, and tstat that gives the slope estimate, the corresponding standard error, and their ratio for each column in x.
+#' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
 #' @author Claus Ekstrom <ekstrom@@sund.ku.dk>
 #' @examples
 #' x <- rnorm(1000)
@@ -19,7 +19,7 @@
 #' mgrwc(y, cbind(rep(1, 1000), x))
 #'
 #' @export
-mgrwc <- function(y, X, maxit = 400L, tol = 1e-07) {
-    .Call(`_mommix_mgrwc`, y, X, maxit, tol)
+mgrwc <- function(y, X, weight, maxit = 400L, tol = 1e-07) {
+    .Call(`_mommix_mgrwc`, y, X, weight, maxit, tol)
 }
 
