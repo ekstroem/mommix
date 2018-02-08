@@ -4,7 +4,8 @@
 \alias{gaussian_mixture_model}
 \title{Fit 2-component Gaussian mixture model}
 \usage{
-gaussian_mixture_model(data, formula, B = 200, ...)
+gaussian_mixture_model(data, formula, B = 200, se.method = c("bootstrap",
+  "wlbs"), ...)
 }
 \arguments{
 \item{data}{a data frame or tibble}
@@ -12,6 +13,9 @@ gaussian_mixture_model(data, formula, B = 200, ...)
 \item{formula}{a formula model formula for the relationship}
 
 \item{B}{a positive integer giving the number of bootstrap samples used to obtain the estimates of the variance associated with the parameter estimates.}
+
+\item{se.method}{The method to compute the standard errors. Defaults to "bootstrap"
+but "wlbs" (weighted likelihood bootstrap) is probably a more robust bet.}
 
 \item{...}{Additional arguments passed on to the fitting process.}
 }

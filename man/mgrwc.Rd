@@ -11,6 +11,8 @@ mgrwc(y, X, weight, maxit = 400L, tol = 1e-07)
 
 \item{X}{A design matrix of regressor variables. Must have the same number of rows as the length of y.}
 
+\item{weight}{A vector of weights for each observation that are used in the estimation.}
+
 \item{maxit}{the maximum number of iterations to use for the EM algorithm}
 
 \item{tol}{the tolerance used for determining convergence}
@@ -27,7 +29,7 @@ Missing values (NA, Inf, NaN) are completely disregarded and pairwise complete c
 \examples{
 x <- rnorm(1000)
 y <- rnorm(1000, mean=c(x[1:700], rep(0, 300)), sd=rep(c(1,2), times=c(700,300)))
-mgrwc(y, cbind(rep(1, 1000), x))
+mgrwc(y, cbind(rep(1, 1000), x), weight=rep(1, 1000))
 
 }
 \author{

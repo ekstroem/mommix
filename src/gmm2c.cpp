@@ -10,7 +10,8 @@ using namespace Rcpp ;
 //' Missing values (NA, Inf, NaN) are completely disregarded and pairwise complete cases are used for the analysis.
 //' 
 //' @param y A vector of outcomes.
-//' @param X A design matrix of regressor variables. Must have the same number of rows as the length of y. 
+//' @param X A design matrix of regressor variables. Must have the same number of rows as the length of y.
+//' @param weight A vector of weights for each observation that are used in the estimation.
 //' @param maxit the maximum number of iterations to use for the EM algorithm
 //' @param tol the tolerance used for determining convergence
 //' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
@@ -18,7 +19,7 @@ using namespace Rcpp ;
 //' @examples
 //' x <- rnorm(1000)
 //' y <- rnorm(1000, mean=c(x[1:700], rep(0, 300)), sd=rep(c(1,2), times=c(700,300)))
-//' mgrwc(y, cbind(rep(1, 1000), x))
+//' mgrwc(y, cbind(rep(1, 1000), x), weight=rep(1, 1000))
 //'
 //' @export
 // [[Rcpp::export]]
@@ -41,6 +42,7 @@ List mgrwc (const arma::colvec y,
     double sigma1 = 0;       // log Variance of contamination group
     double sigma2 = 0;       // log Variance of regression group
     double sumzi = 0;
+    double sumziw = 0;
     arma::colvec beta(K) ;   // Set regression parameters    
     beta = arma::solve(X, y);  // Use full data regression estimates as starting point
 
@@ -52,6 +54,7 @@ List mgrwc (const arma::colvec y,
     
     arma::colvec zi(N) ;
     arma::colvec sqrtzi(N) ;
+    arma::colvec sqrtziw(N) ;
 
     double weightsum = arma::sum(weight);
       
@@ -65,8 +68,10 @@ List mgrwc (const arma::colvec y,
       // Add weights here to zi for weighted likelihood
       
       sqrtzi = sqrt(1-zi);
+      sqrtziw = sqrt((1-zi)%weight);
 
       sumzi = arma::sum(zi);
+      sumziw = arma::sum(zi%weight);
 
       // Check if we are close to the border
       if (alpha < 0.01 || alpha > .99) {
@@ -78,18 +83,23 @@ List mgrwc (const arma::colvec y,
 	break;
       }
 
-      //      alpha = arma::mean(zi);  // Probability of contamination
+      // alpha = arma::mean(zi);  // Probability of contamination
       alpha = arma::sum(zi%weight)/weightsum;  // Probability of contamination
-      mu = arma::sum(zi%weight%y) / arma::sum(zi%weight);   // SAVE
-      sigma1 = .5*log(arma::sum( zi%square(y-mu)) / (sumzi));
+      // mu = arma::sum(zi%y) / arma::sum(zi);   // SAVE
+      mu = arma::sum(zi%weight%y) / arma::sum(zi%weight);  // Mean of contamination distribution
+      // sigma1 = .5*log(arma::sum( zi%square(y-mu)) / (sumzi));
+      sigma1 = .5*log(arma::sum( weight%zi%square(y-mu)) / (sumziw));
 
-      beta = arma::solve(sqrtzi%X.each_col(), sqrtzi%y);
+      // Hvad sker der her?
+      // beta = arma::solve(sqrtzi%X.each_col(), sqrtzi%y);
+      beta = arma::solve(sqrtziw%X.each_col(), sqrtziw%y);
 
       // Update prediction 
       Xb = X * beta ;
       resid = y - Xb;
       
-      sigma2 = .5*log (arma::sum(arma::square(sqrtzi%resid))/(N-sumzi));
+      // sigma2 = .5*log (arma::sum(arma::square(sqrtzi%resid))/(N-sumzi));
+      sigma2 = .5*log (arma::sum(arma::square(sqrtziw%resid))/(N-sumziw));
 
       // TO DO
       // If alpha close to border then remove the contamination component

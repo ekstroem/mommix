@@ -5,6 +5,8 @@
 #' @param data a data frame or tibble
 #' @param formula a formula model formula for the relationship
 #' @param B a positive integer giving the number of bootstrap samples used to obtain the estimates of the variance associated with the parameter estimates.
+#' @param se.method The method to compute the standard errors. Defaults to "bootstrap"
+#' but "wlbs" (weighted likelihood bootstrap) is probably a more robust bet.
 #' @param ... Additional arguments passed on to the fitting process.
 #' @return Returns a list with the following elements: ...
 #' @author Claus Ekstrom \email{ekstrom@@sund.ku.dk} and Christian Pipper \email{pipper@@sund.ku.dk}
@@ -23,8 +25,11 @@
 #' gaussian_mixture_model(DF, y ~ x + x2)
 #' 
 #' @export
-gaussian_mixture_model <- function(data, formula, B=200, ...) {
+gaussian_mixture_model <- function(data, formula, B=200, se.method=c("bootstrap", "wlbs"), ...) {
 
+
+    se.method <- match.arg(se.method)
+    
     ## We run a fit for a lm model to obtain
     ## starting values and to extract the variables
     ## from the relevant environment
@@ -32,7 +37,7 @@ gaussian_mixture_model <- function(data, formula, B=200, ...) {
     origcall <- call    
     lmcall <- origcall
     lmcall[[1]] <- as.name("lm")
-    lmcall$maxit <- lmcall$tol <- lmcall$B <- NULL
+    lmcall$maxit <- lmcall$tol <- lmcall$B <- lmcall$se.method <- NULL
     lmFit <- eval(lmcall, parent.frame())
 
     args <- list(...)
@@ -47,18 +52,18 @@ gaussian_mixture_model <- function(data, formula, B=200, ...) {
     fitresult <- mgrwc(y=Y, X=X, maxit=maxit, tol=tol, weight=rep(1,length(Y)))
 
     ## Now compute bootstrap SE
-    bootresult <- sapply(1:B, function(x) {
-        indexsample <- sample(1:length(Y), replace=TRUE)
-        mgrwc(y=Y[indexsample], X=X[indexsample,], maxit=maxit, tol=tol, weight=rep(1,length(Y)))
-    } )
-    bootresult <- sapply(1:B, function(x) {
-        weight <- rexp(length(Y))
-        weight <- length(Y)*weight/sum(weight)
-#        weight <- rep(1, length(Y))
-        mgrwc(y=Y, X=X, maxit=maxit, tol=tol, weight=weight)
-    } )
-
-    print(bootresult)
+    if (se.method == "wlbs") {
+        bootresult <- sapply(1:B, function(x) {
+            indexsample <- sample(1:length(Y), replace=TRUE)
+            mgrwc(y=Y[indexsample], X=X[indexsample,], maxit=maxit, tol=tol, weight=rep(1,length(Y)))
+        } )
+    } else {
+        bootresult <- sapply(1:B, function(x) {
+            weight <- rexp(length(Y))
+            weight <- length(Y)*weight/sum(weight)
+            mgrwc(y=Y, X=X, maxit=maxit, tol=tol, weight=weight)
+        } )
+    }
 
     se.alpha <- sd(unlist(bootresult[7,]))
 
