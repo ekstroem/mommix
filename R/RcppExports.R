@@ -12,6 +12,8 @@
 #' @param weight A vector of weights for each observation that are used in the estimation.
 #' @param maxit the maximum number of iterations to use for the EM algorithm
 #' @param tol the tolerance used for determining convergence
+#' @param alpha the starting probability for an observation originating from the contamination distribution. Must be strictly between 0 and 1
+#' @param mu the starting value for the mean of the contamination distribution. If set to NA (the default) then the mean of the y vector is used.
 #' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
 #' @author Claus Ekstrom <ekstrom@@sund.ku.dk>
 #' @examples
@@ -20,7 +22,7 @@
 #' mgrwc(y, cbind(rep(1, 1000), x), weight=rep(1, 1000))
 #'
 #' @export
-mgrwc <- function(y, X, weight, maxit = 400L, tol = 1e-07) {
-    .Call(`_mommix_mgrwc`, y, X, weight, maxit, tol)
+mgrwc <- function(y, X, weight, maxit = 400L, tol = 1e-07, alpha = 0.3, mu = NA_real_) {
+    .Call(`_mommix_mgrwc`, y, X, weight, maxit, tol, alpha, mu)
 }
 

@@ -10,6 +10,7 @@
 #' @param ... Additional arguments passed on to the fitting process.
 #' @return Returns a list with the following elements: ...
 #' @author Claus Ekstrom \email{ekstrom@@sund.ku.dk} and Christian Pipper \email{pipper@@sund.ku.dk}
+#' @references Unpublished manuscript by authors and Adrian O'Hagan, Thomas Brendan Murphy, Luca Scrucca, and Isobel Claire Gormley "On Estimation of Parameter Uncertainty in Model-Based Clustering." arXiv:1510.00551v2
 #' @keywords manip
 #' @examples
 #'
@@ -27,7 +28,7 @@
 #' @export
 gaussian_mixture_model <- function(data, formula, B=200, se.method=c("bootstrap", "wlbs"), ...) {
 
-
+    ## Figure out the default method
     se.method <- match.arg(se.method)
     
     ## We run a fit for a lm model to obtain
@@ -55,13 +56,13 @@ gaussian_mixture_model <- function(data, formula, B=200, se.method=c("bootstrap"
     if (se.method == "wlbs") {
         bootresult <- sapply(1:B, function(x) {
             indexsample <- sample(1:length(Y), replace=TRUE)
-            mgrwc(y=Y[indexsample], X=X[indexsample,], maxit=maxit, tol=tol, weight=rep(1,length(Y)))
+            mgrwc(y=Y[indexsample], X=X[indexsample,], maxit=maxit, tol=tol, weight=rep(1,length(Y)), alpha=1-(fitresult$alpha+0.05)/1.1, mu=fitresult$mu)
         } )
     } else {
         bootresult <- sapply(1:B, function(x) {
             weight <- rexp(length(Y))
             weight <- length(Y)*weight/sum(weight)
-            mgrwc(y=Y, X=X, maxit=maxit, tol=tol, weight=weight)
+            mgrwc(y=Y, X=X, maxit=maxit, tol=tol, weight=weight, alpha=1-(fitresult$alpha+0.05)/1.1, mu=fitresult$mu)
         } )
     }
 

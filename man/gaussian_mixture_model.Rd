@@ -39,6 +39,9 @@ DF <- data.frame(x, x2, y)
 gaussian_mixture_model(DF, y ~ x + x2)
 
 }
+\references{
+Unpublished manuscript by authors and Adrian O'Hagan, Thomas Brendan Murphy, Luca Scrucca, and Isobel Claire Gormley "On Estimation of Parameter Uncertainty in Model-Based Clustering." arXiv:1510.00551v2
+}
 \author{
 Claus Ekstrom \email{ekstrom@sund.ku.dk} and Christian Pipper \email{pipper@sund.ku.dk}
 }

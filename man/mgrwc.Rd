@@ -4,7 +4,8 @@
 \alias{mgrwc}
 \title{Gaussian mixture of regression models with contamination}
 \usage{
-mgrwc(y, X, weight, maxit = 400L, tol = 1e-07)
+mgrwc(y, X, weight, maxit = 400L, tol = 1e-07, alpha = 0.3,
+  mu = NA_real_)
 }
 \arguments{
 \item{y}{A vector of outcomes.}
@@ -16,6 +17,10 @@ mgrwc(y, X, weight, maxit = 400L, tol = 1e-07)
 \item{maxit}{the maximum number of iterations to use for the EM algorithm}
 
 \item{tol}{the tolerance used for determining convergence}
+
+\item{alpha}{the starting probability for an observation originating from the contamination distribution. Must be strictly between 0 and 1}
+
+\item{mu}{the starting value for the mean of the contamination distribution. If set to NA (the default) then the mean of the y vector is used.}
 }
 \value{
 A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains

@@ -14,6 +14,8 @@ using namespace Rcpp ;
 //' @param weight A vector of weights for each observation that are used in the estimation.
 //' @param maxit the maximum number of iterations to use for the EM algorithm
 //' @param tol the tolerance used for determining convergence
+//' @param alpha the starting probability for an observation originating from the contamination distribution. Must be strictly between 0 and 1
+//' @param mu the starting value for the mean of the contamination distribution. If set to NA (the default) then the mean of the y vector is used.
 //' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
 //' @author Claus Ekstrom <ekstrom@@sund.ku.dk>
 //' @examples
@@ -27,7 +29,9 @@ List mgrwc (const arma::colvec y,
             const arma::mat X,
 	    const arma::colvec weight,
             const int maxit = 400,
-	    const double tol = 1e-07 
+	    const double tol = 1e-07,
+	    double alpha = 0.3,   // Probability of contamination distribution. Should be in (0,1)
+	    double mu=NA_REAL
             ) {
     // inputs
     const int N = y.n_rows ;
@@ -37,11 +41,15 @@ List mgrwc (const arma::colvec y,
 
     double nll = 0;
     double oldnll = 0;
-    double alpha = 0.45;
-    double mu = mean(y);
+
+    // Use the mean of the y's as a starding point for the distribution of mu
+    if (! arma::is_finite(mu)) {
+      mu = mean(y);
+    }
+    
     double sigma1 = 0;       // log Variance of contamination group
     double sigma2 = 0;       // log Variance of regression group
-    double sumzi = 0;
+    //    double sumzi = 0;       // Unweighted version
     double sumziw = 0;
     arma::colvec beta(K) ;   // Set regression parameters    
     beta = arma::solve(X, y);  // Use full data regression estimates as starting point
@@ -53,7 +61,7 @@ List mgrwc (const arma::colvec y,
     sigma1 = .5*log(arma::sum(square(y - arma::mean(y))) / (N-1));
     
     arma::colvec zi(N) ;
-    arma::colvec sqrtzi(N) ;
+    //    arma::colvec sqrtzi(N) ;    // Unweighted version
     arma::colvec sqrtziw(N) ;
 
     double weightsum = arma::sum(weight);
@@ -64,13 +72,13 @@ List mgrwc (const arma::colvec y,
       for (int n = 0 ; n < N ; n++) {
 	zi(n) = 1 / (1 + exp(log(1-alpha) - log(alpha) + R::dnorm(y(n), Xb(n,0), exp(sigma2), true) - R::dnorm(y(n), mu, exp(sigma1), true)));
       }
-
+      
       // Add weights here to zi for weighted likelihood
       
-      sqrtzi = sqrt(1-zi);
+      // sqrtzi = sqrt(1-zi);  // Unweighted version
       sqrtziw = sqrt((1-zi)%weight);
 
-      sumzi = arma::sum(zi);
+      //      sumzi = arma::sum(zi);  // Unweighted version
       sumziw = arma::sum(zi%weight);
 
       // Check if we are close to the border
