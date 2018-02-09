@@ -40,7 +40,7 @@ gaussian_mixture_model(DF, y ~ x + x2)
 
 }
 \references{
-Unpublished manuscript by authors and Adrian O'Hagan, Thomas Brendan Murphy, Luca Scrucca, and Isobel Claire Gormley "On Estimation of Parameter Uncertainty in Model-Based Clustering." arXiv:1510.00551v2
+Unpublished manuscript by authors and Newton and Raftery (1994): "Approximate Bayesian Inference with the Weighted Likelihood Boostrap". JRSS-
 }
 \author{
 Claus Ekstrom \email{ekstrom@sund.ku.dk} and Christian Pipper \email{pipper@sund.ku.dk}

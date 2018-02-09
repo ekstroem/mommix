@@ -10,7 +10,7 @@
 #' @param ... Additional arguments passed on to the fitting process.
 #' @return Returns a list with the following elements: ...
 #' @author Claus Ekstrom \email{ekstrom@@sund.ku.dk} and Christian Pipper \email{pipper@@sund.ku.dk}
-#' @references Unpublished manuscript by authors and Adrian O'Hagan, Thomas Brendan Murphy, Luca Scrucca, and Isobel Claire Gormley "On Estimation of Parameter Uncertainty in Model-Based Clustering." arXiv:1510.00551v2
+#' @references Unpublished manuscript by authors and Newton and Raftery (1994): "Approximate Bayesian Inference with the Weighted Likelihood Boostrap". JRSS-
 #' @keywords manip
 #' @examples
 #'
