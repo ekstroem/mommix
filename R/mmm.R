@@ -95,6 +95,7 @@ moment_mixture_model <- function(data, formula, weights=c("equal", "square"), ma
 #        dweights <- (-4)*(eta^3)*x*weights*weights
         
 
+        
         ## Derivatives needed for variance
 ##        dzbar1 <- mean(x*weights+dweights*eta)/wbar-zbar1*mean(dweights)/(wbar)
         
@@ -113,8 +114,11 @@ moment_mixture_model <- function(data, formula, weights=c("equal", "square"), ma
 
     ## Now estimate the covariance
     ## Compute the influence functions including epsilon, and derivatives
-#    epsiloni <- solve(crossprod(X)) %*% t(X * (resid(mainmodel)))
-#    print(1999*as.numeric(solve(crossprod(X))) * t((X) * resid(mainmodel)))
+
+ ####   epsiloni <- diag(solve(var(X))) * (X-colMeans(X))*resid(mainmodel)
+
+    # Derivatives used for deriviation of a's and b's
+#    dzbar1 <- 
 
     ##ksi = (lambda3*diag(length(lambda1)))
 
