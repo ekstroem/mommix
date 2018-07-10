@@ -89,7 +89,10 @@ moment_mixture_model <- function(data, formula, weights=c("equal", "square"), ma
         ## Old school with OLS
         sqmodel <- lm(Y2 ~ I(eta/scalingfactor) + I((eta/scalingfactor)^2), weights=weight.sqr)
         lambda2 <- unname(coef(sqmodel)[2])
-        lambda3 <- unname(coef(sqmodel)[3]) 
+        lambda3 <- unname(coef(sqmodel)[3])
+
+        if (is.na(lambda3))
+            lambda3 <- 0
 
         ## Compute the parts that are used for a's and b's
         ## Better to do this in steps as we need the derivatives as well
@@ -113,7 +116,7 @@ moment_mixture_model <- function(data, formula, weights=c("equal", "square"), ma
         
         ## Estimate p
         ## Should do a check for coefficient not too close to zero
-        phat <- unname(1/lambda3)
+        phat <- ifelse(is.na(lambda3), 0, unname(1/lambda3))
         beta <- lambda1*lambda3
     }
 

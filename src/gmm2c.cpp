@@ -1,7 +1,6 @@
 #define RCPP_ARMADILLO_RETURN_COLVEC_AS_VECTOR
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
-
 using namespace Rcpp ;
 
 //' Gaussian mixture of regression models with contamination

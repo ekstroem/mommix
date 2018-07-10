@@ -76,8 +76,13 @@ i <- 1
   weights<-1/(1+ztilde^4)
   fit2<-lm(I(y^2)~ztilde+I(ztilde^2),weights=weights)
   est.gamma2[i]<-coef(fit2)[2]    ## 
-  est.gamma3[i]<-coef(fit2)[3]    ##
-  est.beta[i]<-est.gamma3[i]*est.gamma1[i]
+    est.gamma3[i]<-coef(fit2)[3]    ##
+
+    ## Added CE
+    if (is.na(est.gamma3[i]))
+        est.gamma3[i] <- 0
+
+    est.beta[i]<-est.gamma3[i]*est.gamma1[i]
 
 
 ## Good until here
