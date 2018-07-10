@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // mgrwc
-List mgrwc(const arma::colvec y, const arma::mat X, const arma::colvec weight, const int maxit, const double tol, double alpha, double mu);
-RcppExport SEXP _mommix_mgrwc(SEXP ySEXP, SEXP XSEXP, SEXP weightSEXP, SEXP maxitSEXP, SEXP tolSEXP, SEXP alphaSEXP, SEXP muSEXP) {
+List mgrwc(const arma::colvec y, const arma::mat X, const arma::colvec weight, const int maxit, const double tol, double alpha, double mu, const bool mufixed);
+RcppExport SEXP _mommix_mgrwc(SEXP ySEXP, SEXP XSEXP, SEXP weightSEXP, SEXP maxitSEXP, SEXP tolSEXP, SEXP alphaSEXP, SEXP muSEXP, SEXP mufixedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,13 +19,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    rcpp_result_gen = Rcpp::wrap(mgrwc(y, X, weight, maxit, tol, alpha, mu));
+    Rcpp::traits::input_parameter< const bool >::type mufixed(mufixedSEXP);
+    rcpp_result_gen = Rcpp::wrap(mgrwc(y, X, weight, maxit, tol, alpha, mu, mufixed));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_mommix_mgrwc", (DL_FUNC) &_mommix_mgrwc, 7},
+    {"_mommix_mgrwc", (DL_FUNC) &_mommix_mgrwc, 8},
     {NULL, NULL, 0}
 };
 

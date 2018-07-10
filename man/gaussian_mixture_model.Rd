@@ -5,7 +5,7 @@
 \title{Fit 2-component Gaussian mixture model}
 \usage{
 gaussian_mixture_model(data, formula, B = 200, se.method = c("bootstrap",
-  "wlbs"), ...)
+  "wlbs"), mu = NA, mufixed = FALSE, maxit = 200, ...)
 }
 \arguments{
 \item{data}{a data frame or tibble}
@@ -16,6 +16,12 @@ gaussian_mixture_model(data, formula, B = 200, se.method = c("bootstrap",
 
 \item{se.method}{The method to compute the standard errors. Defaults to "bootstrap"
 but "wlbs" (weighted likelihood bootstrap) is probably a more robust bet.}
+
+\item{mu}{A starting value for the mu component. Defaults to NA (which means that the starting value is calculated from the average value of the outcomes)}
+
+\item{mufixed}{A boolean stating whether the mu component should be fixed at the given value. Defaults to FALSE.}
+
+\item{maxit}{The maximum number of iterations used for computing the estimates from the gaussian mixture model. Defaults to 200.}
 
 \item{...}{Additional arguments passed on to the fitting process.}
 }

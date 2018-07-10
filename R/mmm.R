@@ -6,7 +6,13 @@
 #' @param formula a formula model formula for the relationship
 #' @param weights a string that defines the weights used for the estimation using weighted regression. Possibilities are "equal" (the default) for unweighted regression estimation and "square" for squared linear predictor estimation.
 #' @param maxiter integer
-#' @return Returns a list with the following elements:.
+#' @return Returns a list with the following elements:
+#' 
+#' * coefficients The estimates of the parameters for 
+#' * alpha
+#' * mu
+#' * covariance
+#' * call
 #' @author Claus Ekstrom \email{ekstrom@@sund.ku.dk} and Christian Pipper \email{pipper@@sund.ku.dk}
 #' @keywords manip
 #' @examples
@@ -94,7 +100,6 @@ moment_mixture_model <- function(data, formula, weights=c("equal", "square"), ma
         zbar4 <- sum(weight.sqr*eta^4)
 #        dweights <- (-4)*(eta^3)*x*weights*weights
         
-
         
         ## Derivatives needed for variance
 ##        dzbar1 <- mean(x*weights+dweights*eta)/wbar-zbar1*mean(dweights)/(wbar)
@@ -156,7 +161,9 @@ moment_mixture_model <- function(data, formula, weights=c("equal", "square"), ma
 ##                mu1 = lambda2/2,
                 mu2 = ifelse(phat==1, NA, (coef(mainmodel)[1] - lambda2/(2*lambda3))/(1-phat)),
                 covariance=diag(length(beta)),
+                method="moment",
                 call=call
                 )
+    class(RET) <- "mommix"
     RET
 }

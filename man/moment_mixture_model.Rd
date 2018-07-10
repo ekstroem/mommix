@@ -17,7 +17,13 @@ moment_mixture_model(data, formula, weights = c("equal", "square"),
 \item{maxiter}{integer}
 }
 \value{
-Returns a list with the following elements:.
+Returns a list with the following elements:
+
+* coefficients The estimates of the parameters for 
+* alpha
+* mu
+* covariance
+* call
 }
 \description{
 Fit a mixture model using moments

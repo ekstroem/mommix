@@ -1,8 +1,8 @@
 Package: mommix
 Type: Package
 Title: Moment-Based Estimation of Regression Mixtures
-Version: 0.5.1
-Date: 2018-01-31
+Version: 0.5.2
+Date: 2018-07-09
 Authors@R: c(person(given="Claus Thorn", family="Ekstrøm", email="ekstrom@sund.ku.dk", role=c("aut", "cre")),
              person(given="Christian Bressen", family="Pipper", email="pipper@sund.ku.dk", role="ctb"))
 Maintainer: Claus Thorn Ekstrøm <ekstrom@sund.ku.dk>
@@ -12,7 +12,7 @@ Imports: Rcpp (>= 0.12.12)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1.9000
 ByteCompile: true
-Encoding: UTF-8    
+Encoding: UTF-8
 Suggests:
     dplyr,
     ggplot2,

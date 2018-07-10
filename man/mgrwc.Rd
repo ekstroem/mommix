@@ -5,7 +5,7 @@
 \title{Gaussian mixture of regression models with contamination}
 \usage{
 mgrwc(y, X, weight, maxit = 400L, tol = 1e-07, alpha = 0.3,
-  mu = NA_real_)
+  mu = NA_real_, mufixed = FALSE)
 }
 \arguments{
 \item{y}{A vector of outcomes.}
@@ -21,9 +21,11 @@ mgrwc(y, X, weight, maxit = 400L, tol = 1e-07, alpha = 0.3,
 \item{alpha}{the starting probability for an observation originating from the contamination distribution. Must be strictly between 0 and 1}
 
 \item{mu}{the starting value for the mean of the contamination distribution. If set to NA (the default) then the mean of the y vector is used.}
+
+\item{mufixed}{Should the value ...}
 }
 \value{
-A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
+A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains information on the nuber of observations, mixture components, coefficients for ...
 }
 \description{
 Fast computation of simple regression slopes for each predictor represented by a column in a matrix

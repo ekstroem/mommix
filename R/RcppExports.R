@@ -14,7 +14,8 @@
 #' @param tol the tolerance used for determining convergence
 #' @param alpha the starting probability for an observation originating from the contamination distribution. Must be strictly between 0 and 1
 #' @param mu the starting value for the mean of the contamination distribution. If set to NA (the default) then the mean of the y vector is used.
-#' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
+#' @param mufixed Should the value ...
+#' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains information on the nuber of observations, mixture components, coefficients for ...
 #' @author Claus Ekstrom <ekstrom@@sund.ku.dk>
 #' @examples
 #' x <- rnorm(1000)
@@ -22,7 +23,7 @@
 #' mgrwc(y, cbind(rep(1, 1000), x), weight=rep(1, 1000))
 #'
 #' @export
-mgrwc <- function(y, X, weight, maxit = 400L, tol = 1e-07, alpha = 0.3, mu = NA_real_) {
-    .Call(`_mommix_mgrwc`, y, X, weight, maxit, tol, alpha, mu)
+mgrwc <- function(y, X, weight, maxit = 400L, tol = 1e-07, alpha = 0.3, mu = NA_real_, mufixed = FALSE) {
+    .Call(`_mommix_mgrwc`, y, X, weight, maxit, tol, alpha, mu, mufixed)
 }
 

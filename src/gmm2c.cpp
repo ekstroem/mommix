@@ -1,4 +1,5 @@
-# include <RcppArmadillo.h>
+#define RCPP_ARMADILLO_RETURN_COLVEC_AS_VECTOR
+#include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace Rcpp ;
@@ -16,7 +17,8 @@ using namespace Rcpp ;
 //' @param tol the tolerance used for determining convergence
 //' @param alpha the starting probability for an observation originating from the contamination distribution. Must be strictly between 0 and 1
 //' @param mu the starting value for the mean of the contamination distribution. If set to NA (the default) then the mean of the y vector is used.
-//' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains
+//' @param mufixed Should the value ...
+//' @return A list with the variables: N, K, coefficients, mu, sigma1, sigma2, alpha, iterationsused, and groupprob which contains information on the nuber of observations, mixture components, coefficients for ...
 //' @author Claus Ekstrom <ekstrom@@sund.ku.dk>
 //' @examples
 //' x <- rnorm(1000)
@@ -31,7 +33,8 @@ List mgrwc (const arma::colvec y,
             const int maxit = 400,
 	    const double tol = 1e-07,
 	    double alpha = 0.3,   // Probability of contamination distribution. Should be in (0,1)
-	    double mu=NA_REAL
+	    double mu=NA_REAL,
+	    const bool mufixed=false
             ) {
     // inputs
     const int N = y.n_rows ;
@@ -44,7 +47,12 @@ List mgrwc (const arma::colvec y,
 
     // Use the mean of the y's as a starding point for the distribution of mu
     if (! arma::is_finite(mu)) {
-      mu = mean(y);
+      // If mu is supposed to be fixed then a real number must be supplied
+      if (mufixed) {
+	Rcpp::stop("When mu is fixed then a finite number must be supplied");
+      } else {
+	mu = mean(y);
+      }
     }
     
     double sigma1 = 0;       // log Variance of contamination group
@@ -82,7 +90,7 @@ List mgrwc (const arma::colvec y,
       sumziw = arma::sum(zi%weight);
 
       // Check if we are close to the border
-      if (alpha < 0.01 || alpha > .99) {
+      if (alpha < 0.001 || alpha > .999) {
 	beta = arma::solve(X, y);
 	sigma2 = .5*log(arma::as_scalar(arma::dot(resid, resid)/(N-K)));
 	mu = NA_REAL;
@@ -94,7 +102,11 @@ List mgrwc (const arma::colvec y,
       // alpha = arma::mean(zi);  // Probability of contamination
       alpha = arma::sum(zi%weight)/weightsum;  // Probability of contamination
       // mu = arma::sum(zi%y) / arma::sum(zi);   // SAVE
-      mu = arma::sum(zi%weight%y) / arma::sum(zi%weight);  // Mean of contamination distribution
+
+      // Only update mu if it is not fixed
+      if (!mufixed) {
+	mu = arma::sum(zi%weight%y) / arma::sum(zi%weight);  // Mean of contamination distribution
+      }
       // sigma1 = .5*log(arma::sum( zi%square(y-mu)) / (sumzi));
       sigma1 = .5*log(arma::sum( weight%zi%square(y-mu)) / (sumziw));
 
