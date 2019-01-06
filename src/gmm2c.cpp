@@ -148,6 +148,7 @@ List mgrwc (const arma::colvec y,
     ret["sigma1"] = exp(sigma1) ;
     ret["sigma2"] = exp(sigma2) ;
     ret["alpha"] = 1-alpha ;
+    ret["convergence"] = (it == maxit); 
     ret["iterationsused"] = it ;
     ret["groupprob"] = zi;
     return(ret) ;

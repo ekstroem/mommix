@@ -4,8 +4,9 @@
 \alias{gaussian_mixture_model}
 \title{Fit 2-component Gaussian mixture model}
 \usage{
-gaussian_mixture_model(data, formula, B = 200, se.method = c("bootstrap",
-  "wlbs"), mu = NA, mufixed = FALSE, maxit = 200, ...)
+gaussian_mixture_model(data, formula, B = 200,
+  se.method = c("bootstrap", "wlbs"), mu = NA, mufixed = FALSE,
+  maxit = 200, ...)
 }
 \arguments{
 \item{data}{a data frame or tibble}
